@@ -26,25 +26,33 @@ function App() {
     return () => window.removeEventListener('popstate', onPop);
   }, []);
 
+  // Clean legacy /admin/login URL to official terminal link /admin
   if (path === '/admin/login') {
-    return <AdminLogin />;
+    window.history.replaceState({}, '', '/admin');
   }
 
-  if (path === '/admin' || path.startsWith('/admin/')) {
+  // Official Single Admin Terminal Link (/admin)
+  if (path === '/admin' || path.startsWith('/admin')) {
     const isAdmin = localStorage.getItem('isAdmin') === 'true';
     if (!isAdmin) {
-      window.location.replace('/admin/login');
-      return null;
+      return (
+        <AdminLogin 
+          onLoginSuccess={() => {
+            setPath('/admin');
+          }} 
+        />
+      );
     }
     return (
       <SuperAdmin 
         onLogout={() => {
           localStorage.removeItem('isAdmin');
-          window.location.href = '/admin/login';
+          setPath('/admin');
+          window.history.replaceState({}, '', '/admin');
         }} 
         onChangePassword={(newPass) => {
+          localStorage.setItem('adminCustomPassword', newPass);
           localStorage.setItem('adminPass', newPass);
-          alert('পাসওয়ার্ড চেঞ্জ হয়েছে: ' + newPass);
         }}
       />
     );

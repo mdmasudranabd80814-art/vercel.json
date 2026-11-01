@@ -1156,7 +1156,7 @@ export default function SuperAdmin({ onLogout, onChangePassword }: { onLogout?: 
                         onLogout();
                       } else {
                         localStorage.removeItem('isAdmin');
-                        window.location.href = '/admin/login';
+                        window.location.href = '/admin';
                       }
                     }}
                     className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-red-50 text-red-600 text-left transition-colors cursor-pointer font-semibold"
@@ -1325,7 +1325,7 @@ export default function SuperAdmin({ onLogout, onChangePassword }: { onLogout?: 
                     onLogout();
                   } else {
                     localStorage.removeItem('isAdmin');
-                    window.location.href = '/admin/login';
+                    window.location.href = '/admin';
                   }
                 }}
                 className="flex items-center gap-1.5 text-red-300 hover:text-red-100 font-semibold transition-colors cursor-pointer"
@@ -3448,8 +3448,8 @@ export default function SuperAdmin({ onLogout, onChangePassword }: { onLogout?: 
                     <p className="font-bold text-gray-900 text-sm">Platform Engineering & Ops</p>
                   </div>
                   <div className="p-4 bg-gray-50 rounded-xl border border-gray-200 space-y-1">
-                    <span className="text-gray-400 font-bold uppercase">Commission Rate</span>
-                    <p className="font-bold text-emerald-700 text-sm">{commissionRate}% Platform / {100 - commissionRate}% Provider</p>
+                    <span className="text-gray-400 font-bold uppercase">Official Terminal Link</span>
+                    <p className="font-mono font-bold text-emerald-800 text-xs truncate">https://all-service-bd-1.vercel.app/admin</p>
                   </div>
                   <div className="p-4 bg-gray-50 rounded-xl border border-gray-200 space-y-1">
                     <span className="text-gray-400 font-bold uppercase">Security Level</span>
@@ -3505,18 +3505,21 @@ export default function SuperAdmin({ onLogout, onChangePassword }: { onLogout?: 
                           const el = document.getElementById('newAdminPass') as HTMLInputElement | null;
                           const newPass = el?.value;
                           if (newPass && newPass.length >= 6) {
+                            localStorage.setItem('adminCustomPassword', newPass);
+                            localStorage.setItem('adminPass', newPass);
                             if (onChangePassword) {
                               onChangePassword(newPass);
-                              if (el) el.value = '';
                             }
+                            if (el) el.value = '';
+                            showToast(`নতুন পাসওয়ার্ড সেট হয়েছে: ${newPass}`);
                           } else {
-                            showToast('Password must be at least 6 characters');
+                            showToast('পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে');
                           }
                         }}
                         className="w-full py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl text-xs shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer"
                       >
                         <Save className="w-3.5 h-3.5" />
-                        <span>Update Admin Password</span>
+                        <span>Update Admin Password (পাসওয়ার্ড পরিবর্তন)</span>
                       </button>
                     </div>
                   </div>

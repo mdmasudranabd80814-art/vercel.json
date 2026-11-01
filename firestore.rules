@@ -1,0 +1,87 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 1. Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    // 2. Services Collection (User-posted & System Services)
+    match /services/{serviceId} {
+      allow get, list: if true;
+      allow create, update, delete: if isSignedIn() || true;
+    }
+
+    // 3. Products Collection (User-posted & System Products)
+    match /products/{productId} {
+      allow get, list: if true;
+      allow create, update, delete: if isSignedIn() || true;
+    }
+
+    // 4. Bookings Collection (Service Orders)
+    match /bookings/{bookingId} {
+      allow get, list: if true;
+      allow create: if true;
+      allow update, delete: if true;
+    }
+
+    // 5. Orders Collection (Hardware & Tool Orders)
+    match /orders/{orderId} {
+      allow get, list: if true;
+      allow create: if true;
+      allow update, delete: if true;
+    }
+
+    // 6. Notifications Collection (Real-time Seller/Buyer Order Alerts)
+    match /notifications/{notificationId} {
+      allow get, list: if true;
+      allow create, update, delete: if true;
+    }
+
+    // 7. Reviews Collection
+    match /reviews/{reviewId} {
+      allow get, list: if true;
+      allow create: if incoming().itemId is string && incoming().rating is number;
+      allow update, delete: if isSignedIn() || true;
+    }
+
+    // 8. Categories Collection
+    match /categories/{categoryId} {
+      allow get, list: if true;
+      allow write: if isSignedIn() || true;
+    }
+
+    // 9. Homepage Content Collection
+    match /homepage_content/{documentId} {
+      allow get, list: if true;
+      allow write: if isSignedIn() || true;
+    }
+
+    // 10. Coupons Collection
+    match /coupons/{couponId} {
+      allow get, list: if true;
+      allow create, update, delete: if true;
+    }
+
+    // 11. Referrals Collection
+    match /referrals/{referralId} {
+      allow get, list: if true;
+      allow create, update, delete: if true;
+    }
+
+    // 12. Users Collection (Loyalty Leaderboard)
+    match /users/{userId} {
+      allow get, list: if true;
+      allow create, update: if isSignedIn() && request.auth.uid == userId;
+    }
+  }
+}
+

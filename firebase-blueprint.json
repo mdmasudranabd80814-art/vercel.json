@@ -1,0 +1,190 @@
+{
+  "entities": {
+    "reviews": {
+      "title": "Review",
+      "description": "A customer review for a service or product",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique ID for the review" },
+        "itemId": { "type": "string", "description": "The ID of the product or service being rated" },
+        "itemType": { "type": "string", "enum": ["service", "product"], "description": "Type of item" },
+        "rating": { "type": "number", "description": "Rating from 1 to 5", "minimum": 1, "maximum": 5 },
+        "comment": { "type": "string", "description": "User feedback text", "maxLength": 500 },
+        "userName": { "type": "string", "description": "Name of the reviewer" },
+        "userEmail": { "type": "string", "description": "Email of the reviewer" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Timestamp of creation" }
+      },
+      "required": ["itemId", "itemType", "rating", "userName", "createdAt"]
+    },
+    "categories": {
+      "title": "Category",
+      "description": "A service category",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "icon": { "type": "string" }
+      },
+      "required": ["id", "name"]
+    },
+    "homepage_content": {
+      "title": "Homepage Content",
+      "description": "Dynamic homepage configuration",
+      "type": "object",
+      "properties": {
+        "heroTitle": { "type": "string" },
+        "heroSubtitle": { "type": "string" },
+        "footerText": { "type": "string" }
+      }
+    },
+    "bookings": {
+      "title": "Service Booking",
+      "description": "A booking request for a home or office service",
+      "type": "object",
+      "properties": {
+        "bookingId": { "type": "string" },
+        "serviceId": { "type": "string" },
+        "serviceTitle": { "type": "string" },
+        "serviceCategory": { "type": "string" },
+        "startingPrice": { "type": "number" },
+        "customerName": { "type": "string" },
+        "customerPhone": { "type": "string" },
+        "date": { "type": "string" },
+        "timeSlot": { "type": "string" },
+        "district": { "type": "string" },
+        "area": { "type": "string" },
+        "addressDetail": { "type": "string" },
+        "specialInstructions": { "type": "string" },
+        "status": { "type": "string", "enum": ["pending", "in_progress", "completed", "cancelled"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["bookingId", "serviceId", "customerName", "customerPhone", "date"]
+    },
+    "orders": {
+      "title": "Hardware Order",
+      "description": "A customer order for hardware or marketplace products",
+      "type": "object",
+      "properties": {
+        "orderId": { "type": "string" },
+        "subtotal": { "type": "number" },
+        "discount": { "type": "number" },
+        "couponCode": { "type": "string" },
+        "deliveryFee": { "type": "number" },
+        "total": { "type": "number" },
+        "paymentMethod": { "type": "string" },
+        "status": { "type": "string", "enum": ["received", "in_progress", "completed", "cancelled"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["orderId", "total"]
+    },
+    "coupons": {
+      "title": "Promotional Coupon",
+      "description": "Discount coupon code for cart orders and service bookings",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "code": { "type": "string", "description": "Unique coupon code e.g. ALL20, REF-1234" },
+        "discountType": { "type": "string", "enum": ["percent", "flat"] },
+        "discountValue": { "type": "number", "description": "Percentage or flat amount in Tk" },
+        "minOrder": { "type": "number", "description": "Minimum subtotal required" },
+        "active": { "type": "boolean", "description": "Whether the coupon is active" },
+        "ownerUid": { "type": "string", "description": "User UID who owns this referral reward coupon" },
+        "description": { "type": "string", "description": "Description of coupon offer" }
+      },
+      "required": ["code", "discountType", "discountValue"]
+    },
+    "referrals": {
+      "title": "User Referral",
+      "description": "Records of user referral signups and generated discount codes",
+      "type": "object",
+      "properties": {
+        "referralId": { "type": "string" },
+        "referrerUid": { "type": "string" },
+        "referrerCode": { "type": "string" },
+        "refereeUid": { "type": "string" },
+        "refereeEmail": { "type": "string" },
+        "rewardCouponReferrer": { "type": "string" },
+        "rewardCouponReferee": { "type": "string" },
+        "status": { "type": "string", "enum": ["pending", "rewarded", "completed"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["referralId", "referrerCode", "refereeEmail"]
+    },
+    "users": {
+      "title": "User Profile",
+      "description": "User profile information including loyalty points",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "loyaltyPoints": { "type": "number" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "displayName", "loyaltyPoints", "updatedAt"]
+    },
+    "notifications": {
+      "title": "Broadcast Notification",
+      "description": "System and admin broadcast notifications for users, products, and offers",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "type": { "type": "string", "enum": ["product", "offer", "order", "referral", "system"] },
+        "title": { "type": "string" },
+        "titleEn": { "type": "string" },
+        "message": { "type": "string" },
+        "messageEn": { "type": "string" },
+        "tag": { "type": "string" },
+        "tagEn": { "type": "string" },
+        "actionType": { "type": "string" },
+        "actionText": { "type": "string" },
+        "actionTextEn": { "type": "string" },
+        "actionUrl": { "type": "string" },
+        "productId": { "type": "string" },
+        "imageUrl": { "type": "string" },
+        "active": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "timestamp": { "type": "number" }
+      },
+      "required": ["id", "type", "title", "message"]
+    }
+  },
+  "firestore": {
+    "/reviews/{reviewId}": {
+      "schema": "reviews",
+      "description": "Collection of customer reviews"
+    },
+    "/categories/{categoryId}": {
+      "schema": "categories",
+      "description": "Service categories"
+    },
+    "/homepage_content/{documentId}": {
+      "schema": "homepage_content",
+      "description": "Dynamic homepage configuration"
+    },
+    "/bookings/{bookingId}": {
+      "schema": "bookings",
+      "description": "Collection of customer service bookings"
+    },
+    "/orders/{orderId}": {
+      "schema": "orders",
+      "description": "Collection of customer product orders"
+    },
+    "/coupons/{couponId}": {
+      "schema": "coupons",
+      "description": "Collection of promotional coupon codes"
+    },
+    "/referrals/{referralId}": {
+      "schema": "referrals",
+      "description": "Collection of user referral records"
+    },
+    "/users/{userId}": {
+      "schema": "users",
+      "description": "Collection of user profiles and loyalty data"
+    },
+    "/notifications/{notificationId}": {
+      "schema": "notifications",
+      "description": "Collection of system and admin broadcast notifications"
+    }
+  }
+}

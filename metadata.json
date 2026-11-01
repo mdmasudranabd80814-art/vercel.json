@@ -1,0 +1,9 @@
+{
+  "name": "All Service BD - অল সার্ভিস বিডি",
+  "description": "বাংলাদেশের সেরা অনলাইন সেবা ও পণ্য মার্কেটপ্লেস। ইলেকট্রিশিয়ান, প্লাম্বার, ক্লিনিং, টিউটর সহ সব সেবা ও হার্ডওয়্যার পণ্য সহজে বুক করুন।",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API",
+    "MAJOR_CAPABILITY_FIREBASE"
+  ]
+}

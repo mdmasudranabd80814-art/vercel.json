@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Services from './components/Services';
-import SuperAdmin from './components/SuperAdmin';
+import AdminPanel from './components/AdminPanel';
 import AdminLogin from './components/AdminLogin';
 import { AndroidLaptopFrame } from './components/AndroidLaptopFrame';
 import { useMarketplace } from './context/MarketplaceContext';
@@ -18,41 +18,52 @@ export interface DynamicHomepageContent {
 
 function App() {
   const [path, setPath] = useState(window.location.pathname);
+  const [isAdmin, setIsAdmin] = useState<boolean>(() => {
+    return localStorage.getItem('isAdmin') === 'true';
+  });
   const { loading, config } = useMarketplace();
 
   useEffect(() => {
-    const onPop = () => setPath(window.location.pathname);
+    const onPop = () => {
+      setPath(window.location.pathname);
+      setIsAdmin(localStorage.getItem('isAdmin') === 'true');
+    };
     window.addEventListener('popstate', onPop);
     return () => window.removeEventListener('popstate', onPop);
   }, []);
 
   // Clean legacy /admin/login URL to official terminal link /admin
-  if (path === '/admin/login') {
-    window.history.replaceState({}, '', '/admin');
-  }
+  useEffect(() => {
+    if (path === '/admin/login') {
+      window.history.replaceState({}, '', '/admin');
+      setPath('/admin');
+    }
+  }, [path]);
 
   // Official Single Admin Terminal Link (/admin)
   if (path === '/admin' || path.startsWith('/admin')) {
-    const isAdmin = localStorage.getItem('isAdmin') === 'true';
     if (!isAdmin) {
       return (
         <AdminLogin 
           onLoginSuccess={() => {
-            setPath('/admin');
+            setIsAdmin(true);
           }} 
+          onGoHome={() => {
+            window.history.pushState({}, '', '/');
+            setPath('/');
+          }}
         />
       );
     }
     return (
-      <SuperAdmin 
+      <AdminPanel 
         onLogout={() => {
           localStorage.removeItem('isAdmin');
-          setPath('/admin');
-          window.history.replaceState({}, '', '/admin');
+          setIsAdmin(false);
         }} 
-        onChangePassword={(newPass) => {
-          localStorage.setItem('adminCustomPassword', newPass);
-          localStorage.setItem('adminPass', newPass);
+        onGoHome={() => {
+          window.history.pushState({}, '', '/');
+          setPath('/');
         }}
       />
     );
@@ -70,7 +81,7 @@ function App() {
     );
   }
 
-  // ===== হোম পেজ - এখানে কোনো চেঞ্জ করি নাই =====
+  // ===== হোম পেজ - সম্পূর্ণ অক্ষত ও পূর্বের মতোই চালু =====
   return (
     <div className="min-h-screen bg-white">
       <AndroidLaptopFrame activeMode="fluid" isWindowShellActive={false}>

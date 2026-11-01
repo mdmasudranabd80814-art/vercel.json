@@ -37,7 +37,8 @@ import {
   PackageCheck,
   Zap,
   Home,
-  KeyRound
+  KeyRound,
+  MessageCircle
 } from 'lucide-react';
 import { POPULAR_SERVICES, POPULAR_PRODUCTS, ServiceItem, ProductItem } from '../data/marketplaceData';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
@@ -675,7 +676,25 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout, onGoHome, admi
                         <td className="px-4 py-3.5 font-mono font-bold text-emerald-800">{b.id}</td>
                         <td className="px-4 py-3.5">
                           <p className="font-bold text-gray-900">{b.customerName}</p>
-                          <p className="text-[11px] text-gray-500">{b.customerPhone}</p>
+                          <div className="flex items-center gap-1.5 mt-1">
+                            <span className="text-[11px] text-gray-500 font-mono">{b.customerPhone}</span>
+                            <a
+                              href={`tel:${b.customerPhone}`}
+                              className="p-1 rounded-md bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition-colors"
+                              title="সরাসরি কল করুন"
+                            >
+                              <PhoneCall className="w-3 h-3" />
+                            </a>
+                            <a
+                              href={`https://wa.me/88${b.customerPhone.replace(/\D/g, '')}`}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="p-1 rounded-md bg-green-50 text-green-700 hover:bg-green-100 transition-colors"
+                              title="হোয়াটসঅ্যাপে মেসেজ পাঠান"
+                            >
+                              <MessageCircle className="w-3 h-3" />
+                            </a>
+                          </div>
                         </td>
                         <td className="px-4 py-3.5 font-semibold text-gray-800">{b.serviceTitle}</td>
                         <td className="px-4 py-3.5 text-gray-600 text-xs">{b.area}</td>
@@ -1097,22 +1116,47 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout, onGoHome, admi
                 <p className="text-xs text-gray-500">আপনার এডমিন পাসওয়ার্ড পরিবর্তন করুন এবং অফিসিয়াল লিংকটি সুরক্ষিত রাখুন</p>
               </div>
 
-              {/* Official Terminal Link Card */}
-              <div className="p-4 bg-emerald-50/80 border border-emerald-200 rounded-2xl space-y-2">
+              {/* Official Terminal & Smart Links Card */}
+              <div className="p-4 bg-emerald-50/80 border border-emerald-200 rounded-2xl space-y-3">
                 <span className="text-[10px] font-extrabold uppercase text-emerald-800 tracking-wider">
-                  একক অফিসিয়াল টার্মিনাল লিংক
+                  অফিসিয়াল স্মার্ট অ্যাক্সেস লিংকসমূহ (যেকোনো একটি দিয়ে ঢুকতে পারবেন)
                 </span>
-                <div className="flex items-center justify-between gap-2">
-                  <p className="font-mono font-bold text-xs sm:text-sm text-emerald-950 truncate">
-                    {officialTerminalUrl}
-                  </p>
+
+                {/* 1. New Smart Link */}
+                <div className="p-3 bg-white rounded-xl border border-emerald-100 flex items-center justify-between gap-2 shadow-2xs">
+                  <div className="truncate">
+                    <p className="text-[10px] font-bold text-emerald-700">১. নতুন স্মার্ট লিংক (ক্যাশবিহীন ফ্রেশ লিংক):</p>
+                    <p className="font-mono font-bold text-xs text-gray-900 truncate">https://all-service-bd-1.vercel.app/control</p>
+                  </div>
                   <button
                     type="button"
-                    onClick={handleCopyTerminalLink}
-                    className="px-3 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-xl transition-all flex items-center gap-1 shrink-0 cursor-pointer shadow-xs"
+                    onClick={() => {
+                      navigator.clipboard.writeText('https://all-service-bd-1.vercel.app/control');
+                      showToast('স্মার্ট লিংক (/control) কপি হয়েছে!');
+                    }}
+                    className="px-2.5 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-lg transition-all flex items-center gap-1 shrink-0 cursor-pointer shadow-xs"
                   >
-                    {copiedLink ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-                    <span>{copiedLink ? 'কপি হয়েছে' : 'লিংক কপি'}</span>
+                    <Copy className="w-3.5 h-3.5" />
+                    <span>কপি</span>
+                  </button>
+                </div>
+
+                {/* 2. Standard Admin Link */}
+                <div className="p-3 bg-white rounded-xl border border-emerald-100 flex items-center justify-between gap-2 shadow-2xs">
+                  <div className="truncate">
+                    <p className="text-[10px] font-bold text-gray-600">২. স্ট্যান্ডার্ড লিংক:</p>
+                    <p className="font-mono font-bold text-xs text-gray-900 truncate">https://all-service-bd-1.vercel.app/admin</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      navigator.clipboard.writeText('https://all-service-bd-1.vercel.app/admin');
+                      showToast('লিংক (/admin) কপি হয়েছে!');
+                    }}
+                    className="px-2.5 py-1.5 bg-gray-700 hover:bg-gray-800 text-white text-xs font-bold rounded-lg transition-all flex items-center gap-1 shrink-0 cursor-pointer shadow-xs"
+                  >
+                    <Copy className="w-3.5 h-3.5" />
+                    <span>কপি</span>
                   </button>
                 </div>
               </div>

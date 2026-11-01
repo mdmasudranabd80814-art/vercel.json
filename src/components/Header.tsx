@@ -385,14 +385,14 @@ export const Header: React.FC<HeaderProps> = ({
             >
               {t('কিভাবে কাজ করে?', 'How it works?')}
             </button>
-            {user?.email === 'mdmasudranabd80814@gmail.com' || user?.email === 'admin@allservicebd.com' ? (
-              <a 
-                href="/admin" 
-                className="text-emerald-100 hover:text-white transition-colors cursor-pointer flex items-center gap-1 font-medium hover:underline"
-              >
-                <span>{t('এডমিন প্যানেল', 'Admin Panel')}</span>
-              </a>
-            ) : null}
+            <a 
+              href="/control" 
+              className="bg-emerald-950/70 hover:bg-emerald-700 text-emerald-200 hover:text-white px-2.5 py-0.5 rounded-full text-[11px] font-bold transition-colors cursor-pointer flex items-center gap-1 border border-emerald-600/70"
+              title="স্মার্ট এডমিন কন্ট্রোল রুম"
+            >
+              <ShieldCheck className="w-3 h-3 text-emerald-300" />
+              <span>{t('এডমিন কন্ট্রোল', 'Admin Control')}</span>
+            </a>
 
             {/* Compact Language Switcher (Top Bar) */}
             <button

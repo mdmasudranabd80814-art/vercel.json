@@ -209,13 +209,12 @@ export const Footer: React.FC<FooterProps> = ({ onSelectCategory, onOpenHowItWor
                   {t('গোপনীয়তা নীতিমালা', 'Privacy Policy')}
                 </span>
               </li>
-              {isAdmin && (
-                <li>
-                  <a href="/admin" className="hover:text-white transition-colors cursor-pointer text-emerald-300">
-                    {t('সুপার এডমিন ড্যাশবোর্ড', 'Super Admin Dashboard')}
-                  </a>
-                </li>
-              )}
+              <li>
+                <a href="/control" className="hover:text-white transition-colors cursor-pointer text-emerald-300 font-semibold flex items-center gap-1.5">
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>{t('এডমিন কন্ট্রোল রুম', 'Admin Control Room')}</span>
+                </a>
+              </li>
             </ul>
           </div>
 

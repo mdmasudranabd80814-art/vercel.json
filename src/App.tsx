@@ -23,6 +23,7 @@ function App() {
   });
   const { loading, config } = useMarketplace();
 
+  // Listen for browser popstate
   useEffect(() => {
     const onPop = () => {
       setPath(window.location.pathname);
@@ -32,16 +33,23 @@ function App() {
     return () => window.removeEventListener('popstate', onPop);
   }, []);
 
-  // Clean legacy /admin/login URL to official terminal link /admin
-  useEffect(() => {
-    if (path === '/admin/login') {
-      window.history.replaceState({}, '', '/admin');
-      setPath('/admin');
-    }
-  }, [path]);
+  // Multi-route admin detection (/control, /admin, /manager, /portal, or query param ?admin=true / ?control=true)
+  const search = window.location.search;
+  const isAdminRoute = (
+    path === '/control' ||
+    path.startsWith('/control') ||
+    path === '/admin' ||
+    path.startsWith('/admin') ||
+    path === '/manager' ||
+    path.startsWith('/manager') ||
+    path === '/portal' ||
+    path.startsWith('/portal') ||
+    search.includes('admin=true') ||
+    search.includes('control=true')
+  );
 
-  // Official Single Admin Terminal Link (/admin)
-  if (path === '/admin' || path.startsWith('/admin')) {
+  // If visiting an admin route
+  if (isAdminRoute) {
     if (!isAdmin) {
       return (
         <AdminLogin 
@@ -81,14 +89,14 @@ function App() {
     );
   }
 
-  // ===== হোম পেজ - সম্পূর্ণ অক্ষত ও পূর্বের মতোই চালু =====
+  // ===== ইউজার হোম পেজ - সম্পূর্ণ অক্ষত ও সুন্দরভাবে চালু =====
   return (
     <div className="min-h-screen bg-white">
       <AndroidLaptopFrame activeMode="fluid" isWindowShellActive={false}>
         <div className="flex flex-col min-h-screen">
           <Navbar onAdminClick={() => {
-            window.history.pushState({}, '', '/admin');
-            setPath('/admin');
+            window.history.pushState({}, '', '/control');
+            setPath('/control');
           }} />
           <Hero />
           <Services />

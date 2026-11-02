@@ -12,11 +12,15 @@ export const db = getFirestore(app, (firebaseConfig as any).firestoreDatabaseId)
 export const storage = getStorage(app);
 
 export let analytics: ReturnType<typeof getAnalytics> | null = null;
-if (typeof window !== "undefined") {
+if (typeof window !== "undefined" && Boolean((firebaseConfig as Record<string, unknown>)?.measurementId)) {
   isSupported()
     .then((supported) => {
-      if (supported) {
-        analytics = getAnalytics(app);
+      if (supported && (firebaseConfig as Record<string, unknown>)?.measurementId) {
+        try {
+          analytics = getAnalytics(app);
+        } catch {
+          // Analytics initialization failed or blocked
+        }
       }
     })
     .catch(() => {

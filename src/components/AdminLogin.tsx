@@ -13,7 +13,8 @@ import {
   Home, 
   Sparkles,
   KeyRound,
-  CheckCircle2
+  CheckCircle2,
+  RefreshCw
 } from 'lucide-react';
 
 interface AdminLoginProps {
@@ -51,6 +52,26 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess, onGoHome
     navigator.clipboard.writeText(smartControlUrl);
     setCopiedLink(true);
     setTimeout(() => setCopiedLink(false), 2000);
+  };
+
+  const handleClearBrowserCache = async () => {
+    try {
+      if ('caches' in window) {
+        const keys = await caches.keys();
+        await Promise.all(keys.map(k => caches.delete(k)));
+      }
+      if ('serviceWorker' in navigator) {
+        const regs = await navigator.serviceWorker.getRegistrations();
+        await Promise.all(regs.map(r => r.unregister()));
+      }
+      localStorage.removeItem('adminCustomPassword');
+      setSuccessMsg('ব্রাউজার ক্যাশ পুরোপুরি ক্লিয়ার হয়েছে! পেজ রিফ্রেশ হচ্ছে...');
+      setTimeout(() => {
+        window.location.reload();
+      }, 600);
+    } catch {
+      window.location.reload();
+    }
   };
 
   return (
@@ -186,6 +207,16 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess, onGoHome
             <p>২. স্ট্যান্ডার্ড লিংক: <strong className="font-mono text-emerald-800">/admin</strong></p>
             <p>৩. ম্যানেজার লিংক: <strong className="font-mono text-emerald-800">/manager</strong></p>
           </div>
+
+          {/* Clear Browser Cache Button */}
+          <button
+            type="button"
+            onClick={handleClearBrowserCache}
+            className="w-full py-2 px-3 rounded-xl border border-gray-200 hover:border-emerald-300 bg-gray-50 hover:bg-emerald-50 text-gray-600 hover:text-emerald-800 text-[11px] font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+          >
+            <RefreshCw className="w-3.5 h-3.5 text-emerald-600" />
+            <span>🔄 ব্রাউজার পুরনো ক্যাশ ক্লিয়ার করুন (Clear Cache)</span>
+          </button>
 
           {/* View Website Button */}
           <div className="pt-2 text-center">

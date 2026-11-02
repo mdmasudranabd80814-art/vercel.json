@@ -7,6 +7,19 @@ import { VitePWA } from 'vite-plugin-pwa';
 export default defineConfig(() => {
   return {
     plugins: [
+      {
+        name: 'handle-dev-sw-fallback',
+        configureServer(server) {
+          server.middlewares.use((req, res, next) => {
+            if (req.url && (req.url.startsWith('/dev-sw.js') || req.url.startsWith('/sw.js'))) {
+              res.setHeader('Content-Type', 'application/javascript');
+              res.end('self.addEventListener("install", function() { self.skipWaiting(); }); self.registration.unregister();');
+              return;
+            }
+            next();
+          });
+        },
+      },
       react(),
       tailwindcss(),
       VitePWA({

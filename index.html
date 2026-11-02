@@ -24,8 +24,13 @@
     <script>
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.getRegistrations().then(function(regs) {
-          for (var r of regs) { r.update(); }
-        });
+          for (var r of regs) {
+            var script = (r.active && r.active.scriptURL) || '';
+            if (script.indexOf('dev-sw') !== -1 || window.location.hostname.indexOf('run.app') !== -1 || window.location.hostname === 'localhost') {
+              r.unregister();
+            }
+          }
+        }).catch(function() {});
       }
     </script>
     <script type="module" src="/src/main.tsx"></script>
